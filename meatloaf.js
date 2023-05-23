@@ -195,10 +195,24 @@ class Question
 
 class Meatloaf
 {
-
     constructor()
     {
         this.questionElements = [];
+        this.pageURL = window.location.href;
+    }
+
+    getPersistentVars()
+    {
+        var savedPdfText = window.sessionStorage.getItem("pdfText");
+        if(savedPdfText) // something saved
+        {
+            pdfText = savedPdfText;
+        }
+    }
+
+    setPersistentVars()
+    {
+        window.sessionStorage.setItem("pdfText", pdfText);
     }
 
     isQuestion(element)
@@ -408,7 +422,12 @@ class Meatloaf
         this.getQuestionElements(); // find all the questions to fill out if any
         this.injectMeatloafHTML();
         this.injectMeatloafCSS();
-        document.getElementById("meatloafFillAssessmentButton").onclick = () => {
+        document.getElementById("meatloafSearchTextInput").oninput = () =>
+        {
+            this.setPersistentVars();
+        }
+        document.getElementById("meatloafFillAssessmentButton").onclick = () => 
+        {
             this.fillButtonClick();
         }
     }
@@ -425,7 +444,6 @@ var meatloaf = new Meatloaf();
 
 window.onload = () =>
 {
-
     meatloaf.gui();
     //meatloaf.fill();
 }
