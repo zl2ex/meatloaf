@@ -310,7 +310,6 @@ class Meatloaf
     {
         var css = `
         <style>
-
             :root
             {
                 --background-color: #141521;
