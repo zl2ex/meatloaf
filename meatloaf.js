@@ -1,3 +1,4 @@
+var version = "0.0.1";
 var pdfText = "";
 
 class Question 
@@ -297,9 +298,10 @@ class Meatloaf
             <p>No possible answers for questions on this page</p>
             `
         }
-        html += `
-        </div>
-        `
+
+        html += `   <p id="version">` + version + `</p>`
+        html += `</div>` // end of body
+
         body.insertAdjacentHTML("afterend", html);   
         this.meatloafDiv = document.getElementById("meatloaf"); // div of the ui
     }
