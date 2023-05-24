@@ -299,7 +299,7 @@ class Meatloaf
             `
         }
 
-        html += `   <p id="version">` + version + `</p>`
+        html += `   <p id="version">v` + version + `</p>`
         html += `</div>` // end of body
 
         body.insertAdjacentHTML("afterend", html);   
