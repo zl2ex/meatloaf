@@ -439,5 +439,6 @@ class Meatloaf
 
 var meatloaf = new Meatloaf();
 
+console.log("MEATLOAF !");
 meatloaf.gui();
 //meatloaf.fill();
