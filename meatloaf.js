@@ -439,12 +439,5 @@ class Meatloaf
 
 var meatloaf = new Meatloaf();
 
-//meatloaf.gui();
+meatloaf.gui();
 //meatloaf.fill();
-
-
-window.onload = () =>
-{
-    meatloaf.gui();
-    //meatloaf.fill();
-}
