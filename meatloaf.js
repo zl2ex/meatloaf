@@ -172,7 +172,6 @@ class Question
     {
         if(this.tagName == "SELECT")
         {
-            // do marking shit
             try
             {
                 this.getSearchSentences();
@@ -185,7 +184,6 @@ class Question
             {
                 this.showError(e);
             }
-            
         }
         else if(this.tagName == "INPUT")
         {
@@ -208,6 +206,7 @@ class Meatloaf
         if(savedPdfText) // something saved
         {
             pdfText = savedPdfText;
+            this.searchInput.value = pdfText;
         }
     }
 
@@ -279,6 +278,9 @@ class Meatloaf
     injectMeatloafHTML()
     {
         this.meatloafDiv = document.createElement("div");
+        this.meatloafDiv.id = "meatloaf";
+        document.body.append(this.meatloafDiv);
+
         var html = `
             <h1 class="meatloafTitle">MEATLOAF</h1>
             <p class="meatloafHeader">paste full learning resource pdf text</p>
@@ -288,18 +290,22 @@ class Meatloaf
             <p id="meatloafMessage"></p>
             <p id="version">v` + version + `</p>`
 
-        this.meatloafDiv.insertAdjacentHTML("afterend", html);
-
-        this.message = getElementById("meatloafMessage");
+        this.meatloafDiv.innerHTML = html;
+        this.message = document.getElementById("meatloafMessage");
+        this.fillButton = document.getElementById("meatloafFillAssessmentButton");
+        this.searchInput = document.getElementById("meatloafSearchTextInput");
+        
         if(this.questionElements.length > 0)
         {
-            this.message.text = "No possible answers for questions on this page";
-            this.message.style.hidden = "false";
+            this.message.innerText = "";
+            this.message.style.display = "none";
+            this.fillButton.style.display = "inline-block";
         }
         else
         {
-            this.message.text = "";
-            this.message.style.hidden = "true";
+            this.message.innerText   = "No possible answers for questions on this page";
+            this.message.style.display = "inline-block";
+            this.fillButton.style.display = "none";
         }
     }
 
@@ -417,16 +423,21 @@ class Meatloaf
 
     gui()
     {
-        this.getQuestionElements(); // find all the questions to fill out if any
-        this.injectMeatloafHTML();
-        this.injectMeatloafCSS();
-        document.getElementById("meatloafSearchTextInput").oninput = () =>
+        if(this.pageURL.includes("mod/quiz/attempt.php")) // must be a valid quiz to run
         {
-            this.setPersistentVars();
-        }
-        document.getElementById("meatloafFillAssessmentButton").onclick = () => 
-        {
-            this.fillButtonClick();
+            this.getQuestionElements(); // find all the questions to fill out if any
+            this.injectMeatloafHTML();
+            this.injectMeatloafCSS();
+            this.getPersistentVars();
+            this.searchInput.oninput = () =>
+            {
+                pdfText = this.searchInput.value;
+                this.setPersistentVars();
+            }
+            this.fillButton.onclick = () => 
+            {
+                this.fillButtonClick();
+            }
         }
     }
 }
