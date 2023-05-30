@@ -18,6 +18,6 @@ function loadScript(url, callback)
     body.appendChild(script);
 }
 
-loadScript("zl2ex.github.io/meatloaf/meatloaf.js", console.log("meatloaf"));
+loadScript("https://zl2ex.github.io/meatloaf/meatloaf.js", console.log("meatloaf"));
 
 ```
