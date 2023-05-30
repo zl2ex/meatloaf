@@ -4,20 +4,12 @@ You can add meatloaf to your browser by downloading a javascript injector extent
 the following code inserts a script tag to the bottom of the webpage
 
 ```
-document.getElementById("body").insertAdjacentHTML("afterend", '<script src="zl2ex.github.io/meatloaf/meatloaf.js"></script>');
+var script = document.createElement('script');
+script.type = 'text/javascript';
 
-function loadScript(url, callback)
-{
-    var body = document.body;
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-
-    script.src = url;
-    script.onreadystatechange = callback;
-    script.onload = callback;
-    body.appendChild(script);
-}
-
-loadScript("https://zl2ex.github.io/meatloaf/meatloaf.js", console.log("meatloaf"));
+script.src = "https://zl2ex.github.io/meatloaf/meatloaf.js";
+script.onreadystatechange = callback;
+script.onload = console.log("meatloaf");
+document.body.appendChild(script);
 
 ```
