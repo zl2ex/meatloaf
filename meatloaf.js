@@ -278,32 +278,29 @@ class Meatloaf
 
     injectMeatloafHTML()
     {
-        var body = document.getElementsByTagName("body")[0];
+        this.meatloafDiv = document.createElement("div");
         var html = `
-        <div id="meatloaf">
-            <p class="meatloafTitle">MEATLOAF</p>
+            <h1 class="meatloafTitle">MEATLOAF</h1>
             <p class="meatloafHeader">paste full learning resource pdf text</p>
             <input type="text" id="meatloafSearchTextInput">
-            <p></p>`
-        
+            <br></br>
+            <button id="meatloafFillAssessmentButton" class="meatloafButton">Fill</button>
+            <p id="meatloafMessage"></p>
+            <p id="version">v` + version + `</p>`
+
+        this.meatloafDiv.insertAdjacentHTML("afterend", html);
+
+        this.message = getElementById("meatloafMessage");
         if(this.questionElements.length > 0)
         {
-            html += `
-            <button id="meatloafFillAssessmentButton" class="meatloafButton">Fill</button>
-            `
+            this.message.text = "No possible answers for questions on this page";
+            this.message.style.hidden = "false";
         }
         else
         {
-            html += `
-            <p>No possible answers for questions on this page</p>
-            `
+            this.message.text = "";
+            this.message.style.hidden = "true";
         }
-
-        html += `   <p id="version">v` + version + `</p>`
-        html += `</div>` // end of body
-
-        body.insertAdjacentHTML("afterend", html);   
-        this.meatloafDiv = document.getElementById("meatloaf"); // div of the ui
     }
 
     injectMeatloafCSS()
@@ -436,9 +433,16 @@ class Meatloaf
 
 
 
-
 var meatloaf = new Meatloaf();
 
-console.log("MEATLOAF !");
-meatloaf.gui();
-//meatloaf.fill();
+if(document.readyState === "complete") // if page has loaded just run
+{
+    meatloaf.gui();
+}
+else // run when page loads
+{
+    window.onload = () =>
+    {
+        meatloaf.gui();
+    }
+}
