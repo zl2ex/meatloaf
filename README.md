@@ -25,8 +25,8 @@ script.src = "https://zl2ex.github.io/meatloaf/meatloaf.js";
 document.body.append(script);
 
 ```
-then set the javascript injector to run when your brower is on the URL of the moodle website eg
-`https://myelearningsite.org/assessment` (highlighted in follwoing image)
+then set the javascript injector to run when your brower is on the URL of the moodle website eg for etco
+`https://etco.elearning.org.nz/mod/quiz/attempt.php` (highlighted in follwoing image)
 you can copy this URL from your browsers search bar when you are in the assessment.
 
 Here is the setup page of scripty, most javascript injector extentions will be simmilar, just copy these settings
