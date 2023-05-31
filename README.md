@@ -11,7 +11,7 @@ A Client side application to take the text from a learning resource and fill out
 
 
 ## Install with scripty on Chrome
-You can add meatloaf to your browser by downloading a javascript injector extention like [scripty](https://chrome.google.com/webstore/detail/scripty-javascript-inject/milkbiaeapddfnpenedfgbfdacpbcbam?authuser=1?authuser=1&gclid=CjwKCAjwvdajBhBEEiwAeMh1UxpkpWTzOZzec9vfKEdQCHhK5cLvEpH_WAUHPcjH2Zu9C25QJ_nwqRoCEqcQAvD_BwE)
+You can add meatloaf to your browser by downloading a javascript injector extention like [scripty](https://scripty.abhisheksatre.com/#/download)
 
 after installing scripty you can download the scripty loader for etco [here](https://scripty.abhisheksatre.com/#/share/script_1685353558613)
 
