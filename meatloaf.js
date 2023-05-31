@@ -1,6 +1,11 @@
 var version = "0.0.1";
 var pdfText = "";
 
+function debug(str)
+{
+    //console.log(str); // uncomment to enable debug
+}
+
 class Question 
 {
     constructor(element)
@@ -47,16 +52,16 @@ class Question
             child = child.nextSibling;
         }
         if(qIdx > 0) this.beforeSentence = text[qIdx - 1];
-        else 
+        else
         {
-            console.log("cant find sentence before question");
-            console.log(this.element);
+            debug("cant find sentence before question");
+            debug(this.element);
         }
         if(qIdx < i) this.afterSentence = text[qIdx + 1];
         else 
         {
-            console.log("cant find sentence after question");
-            console.log(this.element);
+            debug("cant find sentence after question");
+            debug(this.element);
         }
     }
 
@@ -93,7 +98,7 @@ class Question
             var search = pdfText.match(phrase);
             if(search) // found something
             {
-                //console.log(phrase);
+                //debug(phrase);
                 before = phrase;
                 break;
             }
@@ -108,7 +113,7 @@ class Question
             var search = pdfText.match(phrase);
             if(search) // found something
             {
-                //console.log(phrase);
+                //debug(phrase);
                 after = phrase;
                 break;
             }
@@ -132,7 +137,7 @@ class Question
             {
                 if(search[1] == possibleAnswer)
                 {
-                    //console.log(search);
+                    //debug(search);
                     this.ans = answers.length; // send the position of the correct <option> in the <select> tag
                     break;
                 }
@@ -144,13 +149,6 @@ class Question
         }
 
         if(this.ans == undefined) throw new Error("Cant Find the Answer to the question in learning resource");
-
-        /*
-        if(this.text[1] !== undefined) // have some text after the <select> question
-        {
-            console.log(this.text[1]);
-        }
-*/
     }
 
     showError(e)
@@ -231,7 +229,7 @@ class Meatloaf
             var element = document.getElementsByName("next")[0]; // 1st element returned as there should only be 1 next button
             if(element.value == "Next page") // dont click the submit button !
             {
-                console.log("next page");
+                debug("next page");
                 element.click();
                 this.pageAvalible = true;
             }
@@ -247,7 +245,7 @@ class Meatloaf
         {
             if(this.isQuestion(element)) // only get elements that are indeed questions
             {
-                //console.log(element);
+                //debug(element);
                 this.questionElements.push(element);
 
             }
@@ -259,8 +257,7 @@ class Meatloaf
         this.getQuestionElementByType("select");
         //this.getQuestionElementByType("input");
     }
-
-
+    
     fill()
     {
         this.questionElements.forEach(element => 
@@ -282,13 +279,12 @@ class Meatloaf
         document.body.append(this.meatloafDiv);
 
         var html = `
-            <h1 class="meatloafTitle">MEATLOAF</h1>
+            <h1 class="meatloafTitle">MEATLOAF</h1><span id="version">v` + version + `</span>
             <p class="meatloafHeader">paste full learning resource pdf text</p>
             <input type="text" id="meatloafSearchTextInput">
             <br></br>
             <button id="meatloafFillAssessmentButton" class="meatloafButton">Fill</button>
-            <p id="meatloafMessage"></p>
-            <p id="version">v` + version + `</p>`
+            <p id="meatloafMessage"></p>`
 
         this.meatloafDiv.innerHTML = html;
         this.message = document.getElementById("meatloafMessage");
@@ -316,13 +312,15 @@ class Meatloaf
             :root
             {
                 --background-color: #141521;
-                --header-color: #b65506;
+                --header-color: #5792f7;
+                --input-text-color: #b65506;
                 --text-color: white;
                 --button-color: #322b36;
                 --button-hover-color: #262229;
                 --border-color: #7d5391;
                 --error-color: #ff0000;
             }
+
             #meatloaf
             {
                 font-family: "Lato",sans-serif;
@@ -342,6 +340,7 @@ class Meatloaf
             .meatloafTitle
             {
                 font-size: 25px;
+                display: inline-block;
             }
 
             .meatloafButton
@@ -361,7 +360,7 @@ class Meatloaf
             #meatloafSearchTextInput
             {
                 background-color: inherit;
-                color: #bf5e04;
+                color: var(--input-text-color);
                 width: 100%;
                 border: 1px solid var(--border-color);
             }
@@ -409,6 +408,12 @@ class Meatloaf
             .meatloafHeader
             {
                 color: var(--header-color);
+            }
+
+            #version
+            {
+                font-size:9px;
+                right: 0px;
             }
         </style>
         `
