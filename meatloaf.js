@@ -3,223 +3,82 @@ var pdfText = "";
 
 function debug(str)
 {
-    //console.log(str); // uncomment to enable debug
+    console.log(str); // uncomment to enable debug
 }
 
-class Question 
+class Part
 {
     constructor(element)
     {
         this.element = element;
-        this.tagName = this.element.tagName;
-        this.beforeSentence = "";
-        this.afterSentence = "";
-        this.possibleAnswers = [];
+    }
+}
+
+class Question
+{
+    constructor(element)
+    {
+        this.element = element;
+        debug(this.element);
+        this.#getState();
+        this.#getQuestionText();
+        this.#getParts();
     }
 
-    getSearchSentences()
+    #getState()
     {
-        var text = [];
-        var parent = this.element.parentElement.parentElement;
-        var child = parent.firstChild;
-        var i = -1;
-        var qIdx = 0; //question index order in parent paragraph 
-        while (child) 
-        {
-            i++;
-            if (child.nodeType == 3)
-            {
-                text.push(child.data);
-            }
-            else
-            {
-                text.push(""); // push empty to keep array itterations in line with the parent items
-            }
+        this.state = this.element.getElementsByClassName("state")[0].innerHTML;
+        debug("question state : " + this.state);
+    }
 
-            if(child.nodeType == 1)
-            {
-                if(child.tagName == "SPAN")
-                {
-                    if(child.firstChild.tagName == this.tagName) // is a question of the type we are looking for 
-                    {
-                        if(child.firstChild.id == this.element.id) // is the correct question 
-                        {
-                            qIdx = i;
-                        }
-                    }
-                }
-            }
-            child = child.nextSibling;
-        }
-        if(qIdx > 0) this.beforeSentence = text[qIdx - 1];
+    #getQuestionText()
+    {
+        var qText = this.element.getElementsByClassName("qtext");
+        if(qText.length == 0) debug("[Question] qText not found");
         else
         {
-            debug("cant find sentence before question");
-            debug(this.element);
-        }
-        if(qIdx < i) this.afterSentence = text[qIdx + 1];
-        else 
-        {
-            debug("cant find sentence after question");
-            debug(this.element);
+            // get last element as sometimes hidden ones are included if question was previously answered
+            var bold = qText[qText.length - 1].getElementsByTagName("b");
+            if(bold.length == 1) this.questionText = bold[0].innerHTML;
+            else debug("[Question] Question text not found");
         }
     }
 
-    getPossibleAnswers()
+    #getParts()
     {
-        var i = 0;
-        var el = this.element[i];
-        while(el)
+        if(this.questionText.includes("Select the correct words"))
         {
-            this.possibleAnswers.push(el.innerText);
-            i++;
-            el = this.element[i];
-        }
-        if(!this.possibleAnswers) throw new Error("No possibe answers in select statement ");
-    }
-
-    findAnswerFromSentences()
-    {
-
-        var beforeWords = this.beforeSentence.split(" ");
-        var afterWords = this.afterSentence.split(" ");
-
-        var before = "";
-        var after = "";
-
-        var answers = this.possibleAnswers;
-        var phrase = "";
-
-        while(beforeWords.length > 1) // search full sentence and if not found take a word away from the start of the before sentence
-        {
-            phrase = beforeWords.join(" ");
-            
-            var regex = new RegExp(phrase, "i");
-            var search = pdfText.match(phrase);
-            if(search) // found something
-            {
-                //debug(phrase);
-                before = phrase;
-                break;
-            }
-            beforeWords.shift();
-        }
-
-        while(afterWords.length > 1) // and the same for the end of the After Sentence
-        {
-            phrase = afterWords.join(" ");
-            
-            var regex = new RegExp(phrase, "i");
-            var search = pdfText.match(phrase);
-            if(search) // found something
-            {
-                //debug(phrase);
-                after = phrase;
-                break;
-            }
-            afterWords.pop();
-        }
-
-        if(before == "" && after == "") 
-        {
-            throw new Error("No before or after sentences found in text");
-        }
-
-        while(answers.length > 0) // use both matched sentences and put possible answers in to find a match
-        {
-            var possibleAnswer = answers.pop();
-
-            phrase = before + "\\s*(" + possibleAnswer + ")\\s*" + after; // yuck 
-            
-            var regex = new RegExp(phrase, "gi");
-            var search = regex.exec(pdfText);
-            if(search) // found something
-            {
-                if(search[1] == possibleAnswer)
-                {
-                    //debug(search);
-                    this.ans = answers.length; // send the position of the correct <option> in the <select> tag
-                    break;
-                }
-                else // if it doesnt match see if there are any other matches in pdfText
-                {
-                    search = regex.exec(pdfText);
-                }
-            }
-        }
-
-        if(this.ans == undefined) throw new Error("Cant Find the Answer to the question in learning resource");
-    }
-
-    showError(e)
-    {
-        console.error(e, e.stack);
-        this.element.parentElement.classList.add("meatloafToolTip");
-        this.element.classList.add("meatloafQuestionError");
-        this.element.parentElement.setAttribute("data-text", e);
-    }
-
-    removeError()
-    {
-        this.element.parentElement.classList.remove("meatloafToolTip");
-        this.element.classList.remove("meatloafQuestionError");
-        //this.element.parentElement.setAttribute("data-text", e); // wip remove text 
-    }
-
-    answer()
-    {
-        if(this.tagName == "SELECT")
-        {
-            try
-            {
-                this.getSearchSentences();
-                this.getPossibleAnswers();
-                this.findAnswerFromSentences();
-                this.element.value = this.ans;
-                this.removeError();
-            }
-            catch(e)
-            {
-                this.showError(e);
-            }
-        }
-        else if(this.tagName == "INPUT")
-        {
-
+            this.element.getElementsByTagName("select");
         }
     }
 }
 
-class Meatloaf
+
+class Etco
 {
     constructor()
     {
         this.questionElements = [];
-        this.pageURL = window.location.href;
+        this.#getQuestionElements();
     }
 
-    getPersistentVars()
+    #getQuestionElements()
     {
-        var savedPdfText = window.sessionStorage.getItem("pdfText");
-        if(savedPdfText) // something saved
+        var regionMain = document.getElementById("region-main");
+        var qElements = regionMain.getElementsByClassName("content");
+        if(qElements.length > 0)
         {
-            pdfText = savedPdfText;
-            this.searchInput.value = pdfText;
+            for(var i = 0; i < qElements.length; i++)
+            {
+                var el = qElements[i].parentElement;
+                var question = new Question(el);
+                this.questionElements.push(question);
+            };
         }
-    }
-
-    setPersistentVars()
-    {
-        window.sessionStorage.setItem("pdfText", pdfText);
-    }
-
-    isQuestion(element)
-    {
-        var isQuestion = true;
-        if(element.name.includes("jump")) isQuestion = false;
-        if(element.name.includes("flagged")) isQuestion = false;
-        if(element.id[0] !== 'q') isQuestion = false;
-        return isQuestion;
+        else
+        {
+            debug("[Etco] No Question elements found on page");
+        }
     }
 
     nextPage()
@@ -231,48 +90,56 @@ class Meatloaf
             {
                 debug("next page");
                 element.click();
-                this.pageAvalible = true;
             }
         }
-        catch{}
-
-    }
-
-    getQuestionElementByType(type)
-    {
-        var elements = document.getElementsByTagName(type);
-        for(const element of elements)
+        catch
         {
-            if(this.isQuestion(element)) // only get elements that are indeed questions
-            {
-                //debug(element);
-                this.questionElements.push(element);
-
-            }
+            debug("[Etco] cant find next page button");
         }
     }
 
-    getQuestionElements()
-    {
-        this.getQuestionElementByType("select");
-        //this.getQuestionElementByType("input");
-    }
-    
     fill()
     {
-        this.questionElements.forEach(element => 
+        this.questionElements.forEach(question => 
         {
-            var question = new Question(element);
             question.answer();
         });
     }
+}
 
-    getPdfText()
+class Meatloaf
+{
+    constructor()
+    {
+        this.pageURL = window.location.href;
+        if(this.pageURL = "https://etco.elearning.org.nz/mod/quiz/attempt.php")
+        {
+            this.page = new Etco();
+        }
+    }
+
+    #getPersistentVars()
+    {
+        var savedPdfText = window.sessionStorage.getItem("pdfText");
+        if(savedPdfText) // something saved
+        {
+            pdfText = savedPdfText;
+            this.searchInput.value = pdfText;
+        }
+    }
+
+    #setPersistentVars()
+    {
+        window.sessionStorage.setItem("pdfText", pdfText);
+    }
+    
+
+    #getPdfText()
     {
         pdfText = document.getElementById("meatloafSearchTextInput").value;
     }
 
-    injectMeatloafHTML()
+    #injectMeatloafHTML()
     {
         this.meatloafDiv = document.createElement("div");
         this.meatloafDiv.id = "meatloaf";
@@ -291,7 +158,8 @@ class Meatloaf
         this.fillButton = document.getElementById("meatloafFillAssessmentButton");
         this.searchInput = document.getElementById("meatloafSearchTextInput");
         
-        if(this.questionElements.length > 0)
+        //if(this.questionElements.length > 0)
+        if(1)
         {
             this.message.innerText = "";
             this.message.style.display = "none";
@@ -305,7 +173,7 @@ class Meatloaf
         }
     }
 
-    injectMeatloafCSS()
+    #injectMeatloafCSS()
     {
         var css = `
         <style>
@@ -420,28 +288,26 @@ class Meatloaf
         this.meatloafDiv.insertAdjacentHTML("afterbegin", css);
     }
 
-    fillButtonClick()
+    #fillButtonClick()
     {
-        this.getPdfText();
-        this.fill();
+        this.page.fill();
     }
 
     gui()
     {
         if(this.pageURL.includes("mod/quiz/attempt.php")) // must be a valid quiz to run
         {
-            this.getQuestionElements(); // find all the questions to fill out if any
-            this.injectMeatloafHTML();
-            this.injectMeatloafCSS();
-            this.getPersistentVars();
+            this.#injectMeatloafHTML();
+            this.#injectMeatloafCSS();
+            this.#getPersistentVars();
             this.searchInput.oninput = () =>
             {
-                pdfText = this.searchInput.value;
-                this.setPersistentVars();
+                this.#getPdfText();
+                this.#setPersistentVars();
             }
             this.fillButton.onclick = () => 
             {
-                this.fillButtonClick();
+                this.#fillButtonClick();
             }
         }
     }
