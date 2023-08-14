@@ -1,6 +1,6 @@
 # meatloaf
-## Moodle E-learing Assessment Text Lookup Auto Filler
-A Client side application to take the text from a learning resource and fill out questions on moodle automatically.
+## Moodle E-learning Assessment Text Lookup Auto Filler
+A Client-side application to take the text from a learning resource and fill out questions on Moodle automatically.
 
 ### Currently supports
 * ### ETCO E-learning
@@ -11,13 +11,13 @@ A Client side application to take the text from a learning resource and fill out
 
 
 ## Install with scripty on Chrome
-You can add meatloaf to your browser by downloading a javascript injector extention like [scripty](https://scripty.abhisheksatre.com/#/download)
+You can add meatloaf to your browser by downloading a javascript injector extension like [scripty](https://scripty.abhisheksatre.com/#/download)
 
 after installing scripty you can download the scripty loader for etco [here](https://scripty.abhisheksatre.com/#/share/script_1685353558613)
 
-## Install using another javascript injector browser extention
+## Install using another javascript injector browser extension
 
-Paste this code to load meatloaf on your browser
+Paste this code to load Meatloaf on your browser
 ```
 var script = document.createElement('script');
 script.type = 'text/javascript';
@@ -25,14 +25,14 @@ script.src = "https://zl2ex.github.io/meatloaf/meatloaf.js";
 document.body.append(script);
 
 ```
-then set the javascript injector to run when your brower is on the URL of the moodle website eg for etco
-`https://etco.elearning.org.nz/mod/quiz/attempt.php` (highlighted in follwoing image)
-you can copy this URL from your browsers search bar when you are in the assessment.
+then set the javascript injector to run when your browser is on the URL of the Moodle website eg for etco
+`https://etco.elearning.org.nz/mod/quiz/attempt.php` (highlighted in following image)
+you can copy this URL from your browser's search bar when you are in the assessment.
 
-Here is the setup page of scripty, most javascript injector extentions will be simmilar, just copy these settings
+Here is the setup page of scripty, most javascript injector extensions will be similar, just copy these settings
 
 ![](/pictures/javascript_injector_settings.png)  
 
 ## Disclaimer
-### this software was created as a proof of concept and i am am not responsible for your use or abuse of it.  
-You are free to distribute, modify or contirbute to this software under the GNU General Public License.
+### This software was created as a proof of concept and i am not responsible for your use or abuse of it.  
+You are free to distribute, modify or contribute to this software under the GNU General Public License.
