@@ -1,9 +1,14 @@
-var version = "0.0.1";
+var version = "0.0.2";
 var pdfText = "";
 
 function debug(str)
 {
     //console.log(str); // uncomment to enable debug
+}
+
+function regexEscape(string)
+{
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
 class Question 
@@ -80,7 +85,6 @@ class Question
 
     findAnswerFromSentences()
     {
-
         var beforeWords = this.beforeSentence.split(" ");
         var afterWords = this.afterSentence.split(" ");
 
@@ -92,9 +96,9 @@ class Question
 
         while(beforeWords.length > 1) // search full sentence and if not found take a word away from the start of the before sentence
         {
-            phrase = beforeWords.join(" ");
+            phrase = regexEscape(beforeWords.join(" ")); // join words in array togeather and escape any regex specific char
             
-            var regex = new RegExp(phrase, "i");
+            var regex = new RegExp(regexEscape(phrase), "i");
             var search = pdfText.match(phrase);
             if(search) // found something
             {
@@ -107,7 +111,7 @@ class Question
 
         while(afterWords.length > 1) // and the same for the end of the After Sentence
         {
-            phrase = afterWords.join(" ");
+            phrase = regexEscape(afterWords.join(" ")); // join words in array togeather and escape any regex specific char
             
             var regex = new RegExp(phrase, "i");
             var search = pdfText.match(phrase);
@@ -127,7 +131,7 @@ class Question
 
         while(answers.length > 0) // use both matched sentences and put possible answers in to find a match
         {
-            var possibleAnswer = answers.pop();
+            var possibleAnswer = regexEscape(answers.pop()); // get a possible answer and escape it for use in regex
 
             phrase = before + "\\s*(" + possibleAnswer + ")\\s*" + after; // yuck 
             
